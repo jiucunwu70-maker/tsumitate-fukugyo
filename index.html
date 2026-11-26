@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>積立と副業の設計図|積立投資シミュレーターと週10時間の副業プラン</title>
+<meta name="description" content="毎月の積立額と年利から将来の評価額を試算できるシミュレーターと、週10時間・少額から始める副業プランをまとめた無料ページです。NISA・課税口座に対応。">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="積立と副業の設計図">
+<meta property="og:description" content="積立投資の将来額を試算できるシミュレーターと、週10時間・少額から始める副業プラン。">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#0E7490">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230E7490'/%3E%3Cpath d='M12 46 L26 32 L36 40 L52 18' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"積立と副業の設計図","description":"積立投資の将来額を試算できるシミュレーターと、週10時間・少額から始める副業プラン。","applicationCategory":"FinanceApplication","operatingSystem":"Any","inLanguage":"ja","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"}}
+</script>
+<style>
+:root {
+  --bg: #F2F4F6;
+  --surface: #FFFFFF;
+  --ink: #15222C;
+  --muted: #566772;
+  --line: #D9E0E5;
+  --accent: #0E7490;
+  --accent-soft: #D9EFF4;
+  --on-accent: #FFFFFF;
+  --principal: #CBD6DE;
+  --warn: #8A4B06;
+  --warn-soft: #FBEBD3;
+  --font: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  --mono: "DM Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F171D; --surface: #172229; --ink: #E6EEF3; --muted: #9AACB8; --line: #2A3841;
+    --accent: #4CC3DC; --accent-soft: #153640; --on-accent: #06222B; --principal: #2B3B45;
+    --warn: #EBB062; --warn-soft: #3A2A12; color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--font); font-size: 15px; line-height: 1.75;
+  padding-inline: 16px; padding-block: 20px 40px;
+  padding-top: calc(20px + env(safe-area-inset-top, 0px));
+  padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px));
+}
+.wrap { max-width: 720px; margin-inline: auto; display: flex; flex-direction: column; gap: 20px; }
+h1 { font-size: 24px; line-height: 1.3; font-weight: 900; margin: 0; letter-spacing: .01em; text-wrap: balance; }
+h2 { font-size: 18px; line-height: 1.4; font-weight: 700; margin: 0 0 6px; text-wrap: balance; }
+h3 { font-size: 15px; line-height: 1.5; font-weight: 700; margin: 0; }
+p { margin: 0; }
+a { color: var(--accent); }
+.lede { color: var(--muted); margin-top: 6px; }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.label { font-size: 12px; letter-spacing: .06em; color: var(--muted); font-weight: 500; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+.brand { font-size: 13px; font-weight: 700; color: var(--accent); letter-spacing: .04em; margin-bottom: 4px; }
+
+.tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+.tab { font: inherit; font-weight: 700; padding: 10px 8px; border: 0; border-radius: 7px; background: transparent; color: var(--muted); cursor: pointer; }
+.tab[aria-selected="true"] { background: var(--accent); color: var(--on-accent); }
+
+section.panel { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+section.panel[hidden] { display: none; }
+.block { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.rule { border: 0; border-top: 1px solid var(--line); margin: 0; }
+
+.fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 12px; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field.wide { grid-column: 1 / -1; }
+.inwrap { position: relative; }
+input[type="number"] {
+  width: 100%; font-family: var(--mono); font-size: 17px; padding: 10px 34px 10px 12px;
+  background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 8px;
+}
+.suffix { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 13px; pointer-events: none; }
+input[type="range"] { width: 100%; accent-color: var(--accent); margin: 4px 0 0; }
+.rowhead { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: inherit; font-size: 13px; padding: 4px 11px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; cursor: pointer; }
+.chip:hover { border-color: var(--accent); }
+.seg { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--surface); }
+.seg label { cursor: pointer; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg span { display: block; text-align: center; padding: 9px 6px; font-size: 14px; color: var(--muted); }
+.seg input:checked + span { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+.seg input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+.result { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px 16px; display: flex; flex-direction: column; gap: 14px; }
+.big { font-family: var(--mono); font-weight: 500; font-size: clamp(30px, 9vw, 44px); line-height: 1.15; color: var(--accent); letter-spacing: -.01em; }
+.kv { display: flex; flex-direction: column; gap: 6px; margin: 0; }
+.kv div { display: flex; justify-content: space-between; gap: 12px; border-top: 1px solid var(--line); padding-top: 6px; }
+.kv dt, .kv dd { margin: 0; }
+.kv dt { color: var(--muted); }
+.kv dd { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; }
+.warn { background: var(--warn-soft); color: var(--warn); border-radius: 8px; padding: 10px 12px; font-size: 13.5px; line-height: 1.6; display: flex; flex-direction: column; gap: 4px; }
+.warn[hidden] { display: none; }
+
+.chart svg { width: 100%; height: auto; display: block; }
+.chart text { font-family: var(--mono); font-size: 11.5px; fill: var(--muted); }
+.chart .grid { stroke: var(--line); stroke-width: 1; }
+.chart .a-p { fill: var(--principal); }
+.chart .a-g { fill: var(--accent); fill-opacity: .26; }
+.chart .l-v { stroke: var(--accent); stroke-width: 2.5; fill: none; stroke-linejoin: round; }
+.chart .l-h { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; fill: none; }
+.chart .dot { fill: var(--accent); }
+.chart .end { fill: var(--ink); font-weight: 500; font-size: 12.5px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 14px; height: 10px; border-radius: 2px; display: inline-block; }
+.sw.p { background: var(--principal); }
+.sw.g { background: var(--accent); opacity: .5; }
+.sw.h { height: 0; border-top: 2px dashed var(--muted); border-radius: 0; }
+
+details { border-top: 1px solid var(--line); padding-top: 10px; }
+summary { cursor: pointer; font-weight: 700; }
+.scroll { overflow-x: auto; margin-top: 8px; }
+table { border-collapse: collapse; width: 100%; min-width: 360px; font-size: 13.5px; }
+th, td { text-align: right; padding: 7px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { color: var(--muted); font-weight: 500; font-size: 12px; }
+td { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.fine { font-size: 12.5px; color: var(--muted); line-height: 1.65; }
+
+.opts { display: grid; grid-template-columns: 1fr; gap: 10px; }
+.opt { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.opt.base { border-color: var(--accent); }
+.opt .tag { font-size: 11.5px; letter-spacing: .06em; color: var(--accent); font-weight: 700; }
+.facts { display: grid; grid-template-columns: 5.5em 1fr; gap: 3px 10px; margin: 0; font-size: 13.5px; }
+.facts dt { color: var(--muted); }
+.facts dd { margin: 0; min-width: 0; }
+.bars { display: flex; flex-direction: column; gap: 14px; }
+.bar { display: flex; height: 12px; border-radius: 6px; overflow: hidden; gap: 2px; }
+.bar i { display: block; }
+.s1 { background: var(--accent); }
+.s2 { background: color-mix(in srgb, var(--accent) 60%, var(--surface)); }
+.s3 { background: color-mix(in srgb, var(--accent) 32%, var(--surface)); }
+.s4 { background: var(--principal); }
+.bl { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; color: var(--muted); margin-top: 6px; }
+.bl b { font-family: var(--mono); color: var(--ink); font-weight: 500; }
+.bl .sw { height: 10px; width: 10px; border-radius: 50%; margin-right: 5px; }
+ol.road { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+ol.road li { display: grid; grid-template-columns: 5.2em 1fr; gap: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+ol.road li:first-child { border-top: 0; padding-top: 0; }
+.wk { font-family: var(--mono); font-size: 13px; color: var(--accent); font-weight: 500; }
+ol.road p { color: var(--muted); font-size: 14px; }
+.calc { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+.calc .fields { grid-template-columns: 1fr 1fr 1fr; }
+.calc input[type="number"] { padding-right: 28px; font-size: 16px; }
+.out { font-size: 15px; }
+.out b { font-family: var(--mono); font-weight: 500; color: var(--accent); font-size: 20px; }
+.signs { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 4px; }
+.foot { margin-top: 4px; }
+
+.site-foot { border-top: 1px solid var(--line); padding-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+.site-foot h2 { font-size: 15px; margin: 0; }
+.site-foot ul { margin: 0; padding-left: 1.2em; }
+
+@media (max-width: 440px) {
+  .calc .fields { grid-template-columns: 1fr 1fr; }
+  .calc .fields .field:first-child { grid-column: 1 / -1; }
+}
+@media (min-width: 640px) { .opts { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="brand">積立と副業の設計図</div>
+    <h1>積立投資シミュレーターと、週10時間の副業プラン</h1>
+    <p class="lede">完全に放置で稼げる仕組みはありません。手間が少しずつ減っていく形を目指して、数字で確かめながら組み立てます。前提は週10時間、元手は数千〜数万円です。</p>
+  </header>
+
+  <main style="display:flex;flex-direction:column;gap:20px;">
+  <div class="tabs" role="tablist" aria-label="表示の切り替え">
+    <button class="tab" role="tab" id="t-sim" aria-controls="p-sim" aria-selected="true">積立シミュレーター</button>
+    <button class="tab" role="tab" id="t-plan" aria-controls="p-plan" aria-selected="false">副業プラン</button>
+  </div>
+
+  <section class="panel" id="p-sim" role="tabpanel" aria-labelledby="t-sim">
+    <div class="block">
+      <div class="fields">
+        <div class="field wide">
+          <label class="label" for="monthly">毎月の積立額</label>
+          <div class="inwrap"><input type="number" id="monthly" inputmode="numeric" min="0" max="10000000" step="1000" value="20000"><span class="suffix">円</span></div>
+          <div class="chips" id="chips">
+            <button class="chip" type="button" data-v="5000">5,000円</button>
+            <button class="chip" type="button" data-v="10000">1万円</button>
+            <button class="chip" type="button" data-v="30000">3万円</button>
+            <button class="chip" type="button" data-v="50000">5万円</button>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="init">最初にまとめて入れる額</label>
+          <div class="inwrap"><input type="number" id="init" inputmode="numeric" min="0" max="100000000" step="10000" value="0"><span class="suffix">円</span></div>
+        </div>
+        <div class="field">
+          <span class="label" id="lbl-mode">口座の種類</span>
+          <div class="seg" role="radiogroup" aria-labelledby="lbl-mode">
+            <label><input type="radio" name="mode" value="nisa" checked><span>NISA</span></label>
+            <label><input type="radio" name="mode" value="tax"><span>課税口座</span></label>
+          </div>
+        </div>
+        <div class="field">
+          <div class="rowhead"><label class="label" for="rate">想定年利</label><span class="num" id="rate-v">3.0%</span></div>
+          <input type="range" id="rate" min="0" max="10" step="0.5" value="3">
+        </div>
+        <div class="field">
+          <div class="rowhead"><label class="label" for="years">続ける期間</label><span class="num" id="years-v">20年</span></div>
+          <input type="range" id="years" min="1" max="40" step="1" value="20">
+        </div>
+      </div>
+      <p class="fine">初期値は例です。将来の年利は誰にも分からないので、0%〜5%あたりまで動かして幅で見てください。</p>
+    </div>
+
+    <div class="result" aria-live="polite">
+      <div>
+        <div class="label" id="res-label">20年後の評価額</div>
+        <div class="big" id="res-main">0円</div>
+      </div>
+      <dl class="kv">
+        <div><dt>積み立てた元本</dt><dd id="res-p">0円</dd></div>
+        <div><dt id="res-g-l">運用益</dt><dd id="res-g">0円</dd></div>
+        <div><dt>年利が半分だった場合</dt><dd id="res-h">0円</dd></div>
+      </dl>
+      <div class="warn" id="warn" hidden></div>
+    </div>
+
+    <div class="block chart">
+      <h2>資産の増え方</h2>
+      <svg id="svg" viewBox="0 0 480 280" role="img" aria-label="積立の推移グラフ"></svg>
+      <div class="legend">
+        <span><i class="sw p"></i>元本</span>
+        <span><i class="sw g"></i>運用益</span>
+        <span><i class="sw h"></i>年利が半分の場合</span>
+      </div>
+      <details>
+        <summary>年ごとの数字を見る</summary>
+        <div class="scroll"><table id="tbl"><thead><tr><th>年数</th><th>元本</th><th>評価額</th><th>運用益</th></tr></thead><tbody></tbody></table></div>
+      </details>
+    </div>
+
+    <p class="fine foot">月複利で計算し、積立は毎月末の購入としています。信託報酬などのコストは含めていません。課税口座は、その時点で売った場合の手取り(利益に約20.315%の税)で表示します。新NISAは、つみたて投資枠が年120万円、成長投資枠が年240万円、生涯の上限が1,800万円です。制度は変わることがあるため、最新の内容は金融庁などの公式情報で確認してください。</p>
+  </section>
+
+  <section class="panel" id="p-plan" role="tabpanel" aria-labelledby="t-plan" hidden>
+    <div class="block">
+      <h2>最初に決めておくこと</h2>
+      <p>積立に回すのは、すぐ使う予定のないお金だけにします。生活費の3〜6か月分を現金で確保してから始めるのが一般的な目安です。副業の道具代は、月に数百円〜数千円までに抑えると、続かなくなったときの損失が小さく済みます。</p>
+    </div>
+
+    <hr class="rule">
+
+    <div class="block">
+      <h2>4つの方法を比べる</h2>
+      <p class="fine">数字はあくまで目安で、人や分野で大きく変わります。</p>
+      <div class="opts">
+        <article class="opt base">
+          <span class="tag">土台にする</span>
+          <h3>積立投資(NISAなど)</h3>
+          <dl class="facts">
+            <dt>自動化</dt><dd>高い。毎月の引き落としで自動</dd>
+            <dt>初期費用</dt><dd>月100円〜1,000円から始められる会社が多い</dd>
+            <dt>成果まで</dt><dd>数年単位。すぐの収入にはならない</dd>
+            <dt>注意</dt><dd>元本割れすることがある</dd>
+          </dl>
+        </article>
+        <article class="opt">
+          <span class="tag">最初の収入に</span>
+          <h3>スキル販売</h3>
+          <dl class="facts">
+            <dt>例</dt><dd>ココナラ、クラウドソーシング</dd>
+            <dt>自動化</dt><dd>低い。働いた時間が収入になる</dd>
+            <dt>初期費用</dt><dd>ほぼ0円</dd>
+            <dt>成果まで</dt><dd>早ければ1〜2か月</dd>
+            <dt>向く人</dt><dd>文章、デザイン、動画編集、事務などができる人</dd>
+          </dl>
+        </article>
+        <article class="opt">
+          <span class="tag">資産にする</span>
+          <h3>デジタル商品</h3>
+          <dl class="facts">
+            <dt>例</dt><dd>note、BOOTHでのテンプレートや電子書籍</dd>
+            <dt>自動化</dt><dd>中。販売と納品は自動、制作と告知は手作業</dd>
+            <dt>初期費用</dt><dd>0円〜数千円</dd>
+            <dt>成果まで</dt><dd>2〜6か月</dd>
+            <dt>向く人</dt><dd>経験や知識を整理して形にできる人</dd>
+          </dl>
+        </article>
+        <article class="opt">
+          <span class="tag">余力が出てから</span>
+          <h3>ブログ・アフィリエイト</h3>
+          <dl class="facts">
+            <dt>自動化</dt><dd>中〜高。書いた記事が残り続ける</dd>
+            <dt>初期費用</dt><dd>無料のサービスでも始められる。独自ドメインは年1万円前後が目安</dd>
+            <dt>成果まで</dt><dd>半年〜1年以上</dd>
+            <dt>向く人</dt><dd>書き続けられて、調べるのが苦でない人</dd>
+          </dl>
+        </article>
+      </div>
+      <p>迷うなら、積立で土台を作り、スキル販売で最初の収入と実績を得て、そこで得た知識をデジタル商品にする順番が無理のない進め方です。</p>
+    </div>
+
+    <hr class="rule">
+
+    <div class="block">
+      <h2>週10時間の使い方</h2>
+      <div class="bars">
+        <div>
+          <div class="label">作る時期(最初の6週間)</div>
+          <div class="bar" role="img" aria-label="学ぶ2時間、作る6時間、出す1時間、ふり返る1時間"><i class="s1" style="flex:6"></i><i class="s2" style="flex:2"></i><i class="s3" style="flex:1"></i><i class="s4" style="flex:1"></i></div>
+          <div class="bl"><span><i class="sw s1"></i>作る <b>6h</b></span><span><i class="sw s2"></i>学ぶ <b>2h</b></span><span><i class="sw s3"></i>出す <b>1h</b></span><span><i class="sw s4"></i>ふり返る <b>1h</b></span></div>
+        </div>
+        <div>
+          <div class="label">公開してから</div>
+          <div class="bar" role="img" aria-label="作る3時間、出す4時間、学ぶ1時間、ふり返る2時間"><i class="s1" style="flex:3"></i><i class="s3" style="flex:4"></i><i class="s2" style="flex:1"></i><i class="s4" style="flex:2"></i></div>
+          <div class="bl"><span><i class="sw s1"></i>作る <b>3h</b></span><span><i class="sw s3"></i>出す <b>4h</b></span><span><i class="sw s2"></i>学ぶ <b>1h</b></span><span><i class="sw s4"></i>ふり返る <b>2h</b></span></div>
+        </div>
+      </div>
+      <p class="fine">「出す」は公開、告知、問い合わせへの返信です。作ったものは、人に知られて初めて売れます。</p>
+    </div>
+
+    <hr class="rule">
+
+    <div class="block">
+      <h2>12週間の進め方</h2>
+      <ol class="road">
+        <li><span class="wk">1〜2週目</span><div><h3>土台を作る</h3><p>積立の口座を開き、毎月の自動積立を設定します。副業は、自分が提供できることを3つ書き出し、1つに絞ります。</p></div></li>
+        <li><span class="wk">3〜6週目</span><div><h3>最初の1つを作る</h3><p>スキル販売なら出品ページと見本を、デジタル商品なら最初の1点を作ります。完成度は7割で十分です。</p></div></li>
+        <li><span class="wk">7〜8週目</span><div><h3>公開して知らせる</h3><p>出品や販売を始め、SNSなどで知らせます。この時期は収入が0円でも普通です。</p></div></li>
+        <li><span class="wk">9〜12週目</span><div><h3>反応を見て直す</h3><p>閲覧数、問い合わせ、購入の数を見て、タイトルや価格、説明文を直します。続けるかどうかは、この結果を見て決めます。</p></div></li>
+      </ol>
+    </div>
+
+    <hr class="rule">
+
+    <div class="block">
+      <h2>目標から逆算する</h2>
+      <div class="calc">
+        <div class="fields">
+          <div class="field">
+            <label class="label" for="goal">目標の月収</label>
+            <div class="inwrap"><input type="number" id="goal" inputmode="numeric" min="0" step="1000" value="10000"><span class="suffix">円</span></div>
+          </div>
+          <div class="field">
+            <label class="label" for="price">1件の価格</label>
+            <div class="inwrap"><input type="number" id="price" inputmode="numeric" min="1" step="100" value="1500"><span class="suffix">円</span></div>
+          </div>
+          <div class="field">
+            <label class="label" for="fee">手数料</label>
+            <div class="inwrap"><input type="number" id="fee" inputmode="numeric" min="0" max="90" step="1" value="10"><span class="suffix">%</span></div>
+          </div>
+        </div>
+        <p class="out" id="calc-out"></p>
+        <p class="fine">金額は例です。手数料はサービスごとに違うので、利用するサービスの現在の料率を入れてください。</p>
+      </div>
+    </div>
+
+    <hr class="rule">
+
+    <div class="block">
+      <h2>避けたい話</h2>
+      <ul class="signs">
+        <li>「誰でも簡単に月50万円」「確実に儲かる」と言い切る広告</li>
+        <li>自動売買ツールや投資サロンなど、先に高額な支払いを求めるもの</li>
+        <li>人を紹介すると報酬が増える仕組み</li>
+        <li>元本や利回りを保証すると言う勧誘</li>
+      </ul>
+    </div>
+
+    <p class="fine foot">この内容は情報提供であり、金融や税務、法律の助言ではありません。投資は元本が保証されません。最終的な判断はご自身でお願いします。</p>
+  </section>
+  </main>
+
+  <footer class="site-foot">
+    <h2>このサイトについて</h2>
+    <p class="fine">積立投資の将来額を試算するシミュレーターと、少ない時間・元手で始める副業の考え方をまとめた個人運営のページです。特定の金融商品や会社をすすめるものではなく、広告やアフィリエイトリンクは掲載していません。</p>
+    <ul class="fine">
+      <li>試算結果は将来の運用成果を保証するものではありません。実際の結果は運用商品、手数料、税制などで変わります。</li>
+      <li>入力した数値はお使いの端末内で計算され、外部には送信されません。</li>
+      <li>掲載内容は情報提供を目的としており、金融・税務・法律の助言ではありません。</li>
+    </ul>
+    <p class="fine">最終更新:2026年11月26日</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var TAX = 0.20315;
+  var $ = function (s) { return document.querySelector(s); };
+
+  function trim(n, d) { return Number(n.toFixed(d)).toString(); }
+  function yen(n) {
+    n = Math.max(0, n);
+    if (n >= 1e8) return trim(n / 1e8, 2) + '億円';
+    if (n >= 1e4) {
+      var v = n / 1e4;
+      return (v >= 1000 ? Math.round(v).toLocaleString('ja-JP') : trim(v, 1)) + '万円';
+    }
+    return Math.round(n).toLocaleString('ja-JP') + '円';
+  }
+
+  function run(monthly, init, rate, years, nisa) {
+    var r = Math.pow(1 + rate, 1 / 12) - 1;
+    var v = init, p = init, out = [{ y: 0, p: init, v: init }];
+    for (var m = 1; m <= years * 12; m++) {
+      v = v * (1 + r) + monthly;
+      p += monthly;
+      if (m % 12 === 0) {
+        var net = nisa ? v : p + Math.max(0, v - p) * (1 - TAX);
+        out.push({ y: m / 12, p: p, v: net });
+      }
+    }
+    return out;
+  }
+
+  function niceScale(max) {
+    if (max <= 0) return { top: 1, step: 1 };
+    var raw = max / 4, pw = Math.pow(10, Math.floor(Math.log10(raw)));
+    var step = [1, 2, 2.5, 5, 10].map(function (k) { return k * pw; }).filter(function (s) { return s >= raw; })[0];
+    return { step: step, top: Math.ceil(max / step - 1e-9) * step };
+  }
+
+  function path(pts) {
+    return pts.map(function (q, i) { return (i ? 'L' : 'M') + q[0].toFixed(1) + ' ' + q[1].toFixed(1); }).join('');
+  }
+
+  function draw(main, half, years) {
+    var W = 480, H = 280, m = { l: 46, r: 14, t: 24, b: 28 };
+    var maxV = Math.max(main[main.length - 1].v, main[main.length - 1].p, half[half.length - 1].v);
+    var sc = niceScale(maxV), top = sc.top;
+    var unit = top >= 1e8 ? 1e8 : top >= 1e4 ? 1e4 : 1;
+    var suf = unit === 1e8 ? '億' : unit === 1e4 ? '万' : '';
+    var xs = function (y) { return m.l + (W - m.l - m.r) * (y / years); };
+    var ys = function (v) { return H - m.b - (H - m.t - m.b) * (v / top); };
+    var s = '';
+    for (var t = 0; t <= top + sc.step * 0.01; t += sc.step) {
+      var y = ys(t);
+      s += '<line class="grid" x1="' + m.l + '" x2="' + (W - m.r) + '" y1="' + y.toFixed(1) + '" y2="' + y.toFixed(1) + '"/>';
+      s += '<text x="' + (m.l - 6) + '" y="' + (y + 4).toFixed(1) + '" text-anchor="end">' + trim(t / unit, 2) + suf + '</text>';
+    }
+    var xstep = [1, 2, 5, 10].filter(function (k) { return years / k <= 8; })[0];
+    for (var yr = 0; yr <= years; yr += xstep) {
+      s += '<text x="' + xs(yr).toFixed(1) + '" y="' + (H - 8) + '" text-anchor="' + (yr === 0 ? 'start' : 'middle') + '">' + yr + '年</text>';
+    }
+    var pP = main.map(function (d) { return [xs(d.y), ys(d.p)]; });
+    var pV = main.map(function (d) { return [xs(d.y), ys(d.v)]; });
+    var pH = half.map(function (d) { return [xs(d.y), ys(d.v)]; });
+    var base = ys(0).toFixed(1);
+    s += '<path class="a-p" d="' + path(pP) + 'L' + xs(years).toFixed(1) + ' ' + base + 'L' + xs(0).toFixed(1) + ' ' + base + 'Z"/>';
+    s += '<path class="a-g" d="' + path(pV) + path(pP.slice().reverse()).replace(/^M/, 'L') + 'Z"/>';
+    s += '<path class="l-h" d="' + path(pH) + '"/>';
+    s += '<path class="l-v" d="' + path(pV) + '"/>';
+    var e = pV[pV.length - 1];
+    s += '<circle class="dot" cx="' + e[0].toFixed(1) + '" cy="' + e[1].toFixed(1) + '" r="4"/>';
+    s += '<text class="end" x="' + (e[0] - 8).toFixed(1) + '" y="' + (e[1] - 10).toFixed(1) + '" text-anchor="end">' + yen(main[main.length - 1].v) + '</text>';
+    $('#svg').innerHTML = s;
+  }
+
+  function update() {
+    var monthly = Math.min(1e7, Math.max(0, parseFloat($('#monthly').value) || 0));
+    var init = Math.min(1e8, Math.max(0, parseFloat($('#init').value) || 0));
+    var rate = parseFloat($('#rate').value) / 100;
+    var years = parseInt($('#years').value, 10);
+    var nisa = document.querySelector('input[name="mode"]:checked').value === 'nisa';
+
+    $('#rate-v').textContent = (rate * 100).toFixed(1) + '%';
+    $('#years-v').textContent = years + '年';
+
+    var main = run(monthly, init, rate, years, nisa);
+    var half = run(monthly, init, rate / 2, years, nisa);
+    var last = main[main.length - 1];
+
+    $('#res-label').textContent = years + '年後の評価額(' + (nisa ? '非課税' : '売却した場合の手取り') + ')';
+    $('#res-main').textContent = yen(last.v);
+    $('#res-p').textContent = yen(last.p);
+    $('#res-g-l').textContent = nisa ? '運用益' : '運用益(税引後)';
+    $('#res-g').textContent = yen(last.v - last.p);
+    $('#res-h').textContent = yen(half[half.length - 1].v);
+
+    var w = [];
+    if (nisa) {
+      if (monthly > 100000) w.push('月10万円を超える分は、つみたて投資枠ではなく成長投資枠の利用になります。');
+      if (monthly * 12 > 3600000) w.push('年間の投資枠は、つみたて投資枠と成長投資枠を合わせて360万円までです。');
+      if (last.p > 18000000) w.push('元本が生涯の非課税枠1,800万円を超えています。この試算は全額を非課税として計算しているため、実際はもう少し少なくなります。');
+    }
+    var wb = $('#warn');
+    wb.hidden = w.length === 0;
+    wb.innerHTML = w.map(function (t) { return '<span>' + t + '</span>'; }).join('');
+
+    draw(main, half, years);
+    $('#svg').setAttribute('aria-label', years + '年間の積立の推移。元本' + yen(last.p) + 'が、評価額' + yen(last.v) + 'になる見込み');
+
+    var marks = [1, 3, 5, 10, 15, 20, 25, 30, 35, 40].filter(function (y) { return y <= years; });
+    if (marks.indexOf(years) < 0) marks.push(years);
+    $('#tbl tbody').innerHTML = marks.map(function (y) {
+      var d = main[y];
+      return '<tr><td>' + y + '年</td><td>' + yen(d.p) + '</td><td>' + yen(d.v) + '</td><td>' + yen(d.v - d.p) + '</td></tr>';
+    }).join('');
+  }
+
+  ['#monthly', '#init', '#rate', '#years'].forEach(function (id) { $(id).addEventListener('input', update); });
+  document.querySelectorAll('input[name="mode"]').forEach(function (el) { el.addEventListener('change', update); });
+  $('#chips').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-v]');
+    if (!b) return;
+    $('#monthly').value = b.getAttribute('data-v');
+    update();
+  });
+
+  function calc() {
+    var goal = Math.max(0, parseFloat($('#goal').value) || 0);
+    var price = Math.max(0, parseFloat($('#price').value) || 0);
+    var fee = Math.min(90, Math.max(0, parseFloat($('#fee').value) || 0));
+    var net = price * (1 - fee / 100);
+    var out = $('#calc-out');
+    if (net <= 0) { out.textContent = '1件の価格を入れると、必要な件数が出ます。'; return; }
+    var n = Math.ceil(goal / net - 1e-9);
+    var perWeek = n / 4.3;
+    out.innerHTML = '1件あたりの手取りは約<b>' + Math.round(net).toLocaleString('ja-JP') + '円</b>。月に<b>' + n.toLocaleString('ja-JP') + '件</b>、週にすると約<b>' + (Math.round(perWeek * 10) / 10) + '件</b>が必要です。';
+  }
+  ['#goal', '#price', '#fee'].forEach(function (id) { $(id).addEventListener('input', calc); });
+
+  function show(which, setHash) {
+    var plan = which === 'plan';
+    $('#p-sim').hidden = plan;
+    $('#p-plan').hidden = !plan;
+    $('#t-sim').setAttribute('aria-selected', String(!plan));
+    $('#t-plan').setAttribute('aria-selected', String(plan));
+    if (setHash) {
+      try { history.replaceState(null, '', plan ? '#plan' : location.pathname + location.search); } catch (e) {}
+    }
+  }
+  $('#t-sim').addEventListener('click', function () { show('sim', true); });
+  $('#t-plan').addEventListener('click', function () { show('plan', true); });
+  if (location.hash === '#plan') show('plan', false);
+
+  update();
+  calc();
+})();
+</script>
+
+</body>
+</html>
